@@ -217,7 +217,7 @@ button:hover {
 .toast {
     position: fixed;
     bottom: 20px;
-    right: 340px; /* left of sidebar */
+    right: 340px;
     background-color: var(--success);
     color: white;
     padding: 10px 20px;

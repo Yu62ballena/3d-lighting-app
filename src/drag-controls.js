@@ -14,7 +14,7 @@ export class DragControlsManager {
         // ギズモのサイズを少し小さく
         this.transformControls.setSize(0.5);
 
-        this.scene.add(this.transformControls.getHelper()); // r169+では getHelper() をシーンに追加する
+        this.scene.add(this.transformControls);
 
         // ドラッグ中はOrbitControlsを無効化する
         this.transformControls.addEventListener('dragging-changed', (event) => {
