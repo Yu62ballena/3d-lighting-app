@@ -42,7 +42,15 @@ const init = async () => {
         });
 
         // 5. モデルの読み込み
-        await loadModel(scene);
+        const model = await loadModel(scene);
+
+        // 被写体サイズの変更イベントをモデルに反映
+        uiManager.onSubjectSizeChange = (sizePercent) => {
+            if (model && model.userData.baseScale) {
+                const ratio = sizePercent / 100;
+                model.scale.setScalar(model.userData.baseScale * ratio);
+            }
+        };
 
         // 6. アニメーションループ開始
         let time = 0;

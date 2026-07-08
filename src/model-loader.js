@@ -44,6 +44,10 @@ export const loadModel = (scene) => {
                 const targetSize = 0.2; // 20cm
                 const scale = targetSize / maxDim;
                 object.scale.setScalar(scale);
+                // 後でサイズ変更できるようにベーススケールを保存
+                object.userData.baseScale = scale;
+            } else {
+                object.userData.baseScale = 1.0;
             }
 
             // 影の設定 (RectAreaLightは影を落とさないが、将来的な拡張のため)

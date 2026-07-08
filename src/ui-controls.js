@@ -6,6 +6,7 @@ export class UIControlsManager {
         this.strobeCalcFn = strobeCalcFn; // (distance, f, iso, model) => string
 
         this.state = {
+            subject: { size: 100 },
             mainLight: { angle: 6, height: 45, distance: 100, width: 60, heightSize: 60 },
             subLight: { enabled: false, mode: 'rim', angle: 10, height: 30, distance: 150 },
             reflector: { enabled: false, color: 'white', intensityRatio: 0.5, distance: 50, angle: 3 },
@@ -95,6 +96,13 @@ export class UIControlsManager {
     initBindings() {
         const updateAllLighting = () => this.updateLighting();
         const updateStrobe = () => this.updateStrobeSuggestion();
+
+        // Subject Size
+        this.bindNumberInput('subject-size', 'subject-size-num', 'subject.size', () => {
+            if (this.onSubjectSizeChange) {
+                this.onSubjectSizeChange(this.state.subject.size);
+            }
+        });
 
         // Main Light
         this.bindNumberInput('ml-angle', 'ml-angle-num', 'mainLight.angle', updateAllLighting);
@@ -269,6 +277,11 @@ export class UIControlsManager {
         syncSlider('cam-fnumber', this.state.camera.fnumber);
         syncSelect('strobe-model', this.state.camera.strobeModel);
 
+        // subject
+        if(this.state.subject) {
+            syncNumAndSlider('subject-size', 'subject-size-num', this.state.subject.size);
+        }
+
         this.zebraOverlay.setEnable(this.state.zebra.enabled);
         this.zebraOverlay.setThreshold(this.state.zebra.threshold);
     }
@@ -282,5 +295,8 @@ export class UIControlsManager {
         this.syncStateToUI();
         this.updateLighting();
         this.updateStrobeSuggestion();
+        if (this.onSubjectSizeChange && this.state.subject) {
+            this.onSubjectSizeChange(this.state.subject.size);
+        }
     }
 }
