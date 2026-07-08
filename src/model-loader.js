@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import { USDZLoader } from 'three/addons/loaders/USDZLoader.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 const showError = (message) => {
@@ -20,13 +19,10 @@ const hideLoading = () => {
 
 /**
  * モデルの読み込みとセンタリング、スケール調整
- * usdz を優先し、失敗したら glb にフォールバックする
  */
 export const loadModel = (scene) => {
     return new Promise((resolve, reject) => {
-        const usdzLoader = new USDZLoader();
-        const usdzPath = 'assets/models/cat-placeholder.usdz';
-        const glbPath = 'assets/models/cat-placeholder.glb';
+        const glbPath = 'assets/models/apple-placeholder.glb';
 
         // 読み込み完了後の共通処理
         const processLoadedModel = (object) => {
@@ -67,33 +63,19 @@ export const loadModel = (scene) => {
             resolve(object);
         };
 
-        // 1. usdz を試行
-        usdzLoader.load(
-            usdzPath,
-            (usdz) => {
-                console.log('Loaded USDZ model successfully.');
-                processLoadedModel(usdz);
+        const gltfLoader = new GLTFLoader();
+        gltfLoader.load(
+            glbPath,
+            (gltf) => {
+                console.log('Loaded GLB model successfully.');
+                processLoadedModel(gltf.scene);
             },
-            undefined, // onProgress
+            undefined,
             (error) => {
-                console.warn(`Failed to load USDZ from ${usdzPath}. Trying GLB fallback...`, error);
-
-                // 2. 失敗した場合は glb へフォールバック
-                const gltfLoader = new GLTFLoader();
-                gltfLoader.load(
-                    glbPath,
-                    (gltf) => {
-                        console.log('Loaded GLB fallback model successfully.');
-                        processLoadedModel(gltf.scene);
-                    },
-                    undefined,
-                    (fallbackError) => {
-                        hideLoading();
-                        const msg = `Failed to load both USDZ and GLB models.`;
-                        showError(msg);
-                        reject(new Error(msg));
-                    }
-                );
+                hideLoading();
+                const msg = `Failed to load GLB model from ${glbPath}.`;
+                showError(msg);
+                reject(new Error(msg));
             }
         );
     });
